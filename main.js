@@ -1,7 +1,15 @@
-const endpoint = "https://api.waxsweden.org";
+// const endpoint = "https://wax-testnet.eosphere.io";//Test Net
+const endpoint = "https://api.waxsweden.org";//Main Net
 const dapp = "APOC";
+
+/////////Test NET///////////
+// const token = "waxapoctoken";
+// const contract = "waxapocvestr";
+
+//////////Main Net/////////////
 const token = "apocalyptics";
 const contract = "apoc.finance";
+
 var loginact = "";
 const pool_name = "investor";
 
@@ -14,7 +22,8 @@ const transport = new AnchorLinkBrowserTransport();
 const anchorLink = new AnchorLink({
     transport,
     chains: [{
-        chainId: '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4',
+        // chainId: 'f16b1833c747c43682f4386fca9cbb327929334a762755ebec17f6f23c9b8a12',//Test Net
+        chainId: '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4',//Main Net
         nodeUrl: endpoint,
     }],
 });
@@ -36,6 +45,7 @@ async function ShowToast(message) {
         text: message,
         duration: 2500,
     }).showToast();
+
 }
 
 async function autoLogin() {
@@ -78,6 +88,7 @@ async function login() {
             text: e.message,
             duration: 2000,
         }).showToast();
+
     }
 }
 async function wallet_isAutoLoginAvailable() {
@@ -92,6 +103,8 @@ async function wallet_isAutoLoginAvailable() {
 }
 
 async function wallet_selectWallet(walletType) {
+
+    loggedIn = false;
     useAnchor = walletType == "anchor";
 }
 
