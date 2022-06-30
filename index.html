@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apocalyptics - Investor Pool</title>
+    <link rel="icon" type="image/png" href="./assets/logo.png" sizes="300x300" />
+    <script src="https://unpkg.com/anchor-link@3"></script>
+    <script src="https://unpkg.com/anchor-link-browser-transport@3"></script>
+    <script src="https://raw.githubusercontent.com/worldwide-asset-exchange/waxjs/develop/dist-web/waxjs.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/eosjs-account-name@2.2.1/lib/index.js" id="id-sc-include-js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Oswald" />
+</head>
+
+<body>
+    <h1>THE APOCALYPTICS - INVESTOR TOKEN POOL</h1>
+    <h2 id="header_2">Please Login to Proceed !</h2>
+    <div class="navbar">
+        <button class="logout" id="loggedin" onclick="logout();">Logout</button>
+        <span class="account-text" id="acc">account_name</span>
+    </div>
+    <div class="walletparent" id="walletlist" style="display: block;">
+        <div class="walletlist">
+            <div class="closeParent">
+                <input type="button" class="close" onclick="WalletListVisible(!1)" value="x">
+            </div>
+            <div class="walletText">
+                To continue please select an option
+            </div>
+            <div class="text-box">
+                <a href="#" class="btn btn-white btn-animate"
+                    style="background: url(./assets/anchor.png);background-size: 100%;background-repeat: no-repeat;"
+                    onclick='selectWallet("anchor")'></a>
+            </div>
+            <div class="text-box">
+                <a href="#" class="btn btn-white btn-animate"
+                    style="background: url(./assets/wcw.png);background-size: 100%;background-repeat: no-repeat;"
+                    onclick='selectWallet("cloud")'></a>
+            </div>
+        </div>
+    </div>
+    <div class="admin" id="admin">
+        <span class="header">Admin Console</span>
+        <span class="header" id="config_header" style="padding: 1vh 1vw;width:auto;text-align: center;border:2px solid rgb(68, 142, 163);background: rgba(0, 0, 0, 0.5);color: white;"></span>
+        <span class="header" id="user_stats" style="padding: 1vh 1vw;text-align: center;border:1px solid rgb(163, 68, 68);background: rgba(0, 0, 0, 0.5);color: white;"></span>
+        <div class="config" id="config-stats">
+            <div class="config-child">
+                <span style="letter-spacing: 2px;font-weight: bold;text-decoration: underline;" class="config-text">Create Pool</span>
+                <input type="text" class="text-style" name="fname" id="pool_name" placeholder="Pool Name">
+                <input type="text" class="text-style" name="fname" id="pool_qty" placeholder="Pool Quantity">
+                <input type="text" class="text-style" name="fname" id="pool_tge" placeholder="TGE Percentage">
+                <input type="text" class="text-style" name="fname" id="pool_release" placeholder="Release Period">
+                <input type="text" class="text-style" name="fname" id="pool_cliff" placeholder="Cliff Period">
+                <span class="config-text">Pause Claim</span>
+                <label class="switch">
+                    <input type="checkbox" id="pool_check">
+                    <span class="slider round"></span>
+                </label>
+                <a href="#" class="button-admin" onclick="createpool();">Confirm</a>
+            </div>
+            <div class="config-child">
+                <span style="letter-spacing: 2px;font-weight: bold;text-decoration: underline;" class="config-text">Create New Vesting</span>
+                <input type="text" name="fname" class="text-style" id="vest-wallet" placeholder="Wallet Address">
+                <input type="text" name="fname" class="text-style" id="vest-qty" placeholder="Quantity">
+                <form action="/action_page.php">
+                    <label for="start-date" style="color: white;font-family: 'Courier New', Courier, monospace;">Start Date :</label>
+                    <input type="date" class="text-style" id="start-date">
+                  </form>
+                <input type="text" name="fname" class="text-style" id="vest-delay" placeholder="Release Frequency">
+                <a href="#" class="button-admin" onclick="createVesting();">Confirm</a>
+            </div>
+            <div class="config-child">
+                <span style="letter-spacing: 2px;font-weight: bold;text-decoration: underline;" class="config-text">Cancel Vesting</span>
+                <input type="text" name="fname" class="text-style" placeholder="User Wallet">
+                <a href="#" class="button-admin" onclick="cancel();">Confirm</a>
+            </div>
+            <div class="config-child">
+                <span style="letter-spacing: 2px;font-weight: bold;text-decoration: underline;" class="config-text">Block/Unblock Transfer</span>
+                <span class="config-text" id="blockstats">Current Status</span>
+                <label class="switch">
+                    <input type="checkbox" id="block_check">
+                    <span class="slider round"></span>
+                </label>
+                <a href="#" class="button-admin" onclick="block();">Confirm</a>
+            </div>
+        </div>
+    </div>
+    <div class="user" id="user">
+        <span class="header" id="user-config_header" style="padding: 1vh 1vw;width:auto;text-align: center;border:2px solid rgb(68, 142, 163);background: rgba(0, 0, 0, 0.5);color: white;"></span><br>
+        <div class="box" id="box">
+            <div class="percent">
+                <svg>
+                    <circle cx="70" cy="70" r="70"></circle>
+                    <circle id="percent_circle" cx="70" cy="70" r="70"></circle>
+                </svg>
+                <div class="num">
+                    <h2 id="percentage"></h2>
+                </div>
+            </div>
+            <h2 class="text" style="text-align: center; letter-spacing: 3px;">Tokens Claimed Percentage</h2>
+            <div class="userstats">
+                <h2 class="text" id="claim_time" style="padding: 1vh 1vw;width:100%;text-align: center;border:1px solid rgb(163, 68, 68);background: rgba(0, 0, 0, 0.5);color: white;">Progress</h2>
+                <h2 class="text" id="unlocked" style="width:100%;text-align: center;">Progress</h2>
+                <h2 class="text" id="locked" style="width:100%;text-align: center;">Progress</h2>
+                <h2 class="text" id="claimed" style="width:100%;text-align: center;">Progress</h2>
+                <span class="text" id="user_header" style="text-align: center;"></span>
+                <div class="wrap">
+                    <button-claim class="button-claim" onclick="claim();">CLAIM rewards</button-claim>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="./main.js"></script>
+</body>
+
+</body>
+
+</html>
